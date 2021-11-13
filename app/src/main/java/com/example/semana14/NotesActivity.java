@@ -43,8 +43,6 @@ public class NotesActivity extends AppCompatActivity {
         {
             createTask();
         });
-
-        getUsers();
     }
 
     public void createTask()
@@ -59,6 +57,26 @@ public class NotesActivity extends AppCompatActivity {
         );
 
         dbRef.setValue(note);
+        obtainNotes();
+    }
+
+    public void obtainNotes()
+    {
+        DatabaseReference notesRef = db.getReference("notes");
+        notesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Note note = ds.getValue(Note.class);
+                    listTextV.append(note.getNoteName() + ": " + note.getDescription() + "\n");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public void getUsers()
